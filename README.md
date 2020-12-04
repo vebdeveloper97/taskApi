@@ -61,6 +61,16 @@ directly under the Web root.
 http://localhost/basic/web/
 ~~~
 
+~~~
+Consoleni ochib 
+    1) php yii migrate
+    2) php yii app/add-user
+    3) php yii app/add-news
+    4) runtime/logs/save.log
+~~~
+
+
+
 ### Install from an Archive File
 
 Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
