@@ -8,12 +8,12 @@ use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
-use yii\rest\ActiveController;
 use Yii;
+use yii\rest\Controller;
 use yii\rest\Serializer;
 use yii\web\Response;
 
-class BaseApiController extends ActiveController
+class BaseApiController extends Controller
 {
     /**
      * @var Serializer
@@ -52,5 +52,17 @@ class BaseApiController extends ActiveController
             'class' => HttpBearerAuth::class,
         ];
         return $behaviors;
+    }
+
+    /* Controller qaytarish uchun  */
+    public static function getController()
+    {
+        return \Yii::$app->controller->id;
+    }
+
+    /* Action qaytarish uchun */
+    public static function getAction()
+    {
+        return \Yii::$app->controller->action->id;
     }
 }

@@ -2,7 +2,10 @@
 
 namespace app\models;
 
+use app\components\CustomBehaviors;
+use app\modules\hr\models\HrEmployee;
 use Yii;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 /**
@@ -37,11 +40,55 @@ class News extends ActiveRecord
         return [
             [['title'], 'required'],
             [['content'], 'string'],
-            [['date'], 'safe'],
-            [['status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['title', 'author'], 'string', 'max' => 50],
+            [['date'], 'date', 'format' => 'php:Y-m-d'],
+            [['status', 'created_at', 'author_id', 'updated_at', 'updated_by'], 'integer'],
+            [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
+            [['title'], 'string', 'max' => 50],
         ];
     }
+
+    public function afterValidate()
+    {
+        if($this->hasErrors()){
+            $res = [
+                'status' => 'error',
+                'table' => self::tableName() ?? '',
+                'url' => \yii\helpers\Url::current([], true),
+                'message' => $this->getErrors(),
+            ];
+            Yii::error($res, 'save');
+        }
+    }
+
+    public function beforeSave($insert)
+    {
+        if(parent::beforeSave($insert)){
+            if($insert){
+                if(empty($this->date)){
+                    $this->date = date('Y-m-d');
+                }
+                if(empty($this->status)){
+                    $this->status = 1;
+                }
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function behaviors()
+    {
+       return [
+           [
+               'class' => CustomBehaviors::class,
+           ],
+           [
+               'class' => TimestampBehavior::class,
+           ]
+       ];
+    }
+
 
     /**
      * {@inheritdoc}
@@ -60,5 +107,9 @@ class News extends ActiveRecord
             'created_by' => Yii::t('app', 'Created By'),
             'updated_by' => Yii::t('app', 'Updated By'),
         ];
+    }
+
+    public function getUsers(){
+        return $this->hasOne(User::class, ['id' => 'author_id']);
     }
 }

@@ -18,9 +18,11 @@ $config = [
     ],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
             'cookieValidationKey' => 'AUDPEEpvRCLCYjVyipJuWotVj1bZLyr5',
-            'baseUrl' => ''
+            'baseUrl' => '',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -63,7 +65,8 @@ $config = [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'api/news',
                     'pluralize' => false,
-                ]
+                ],
+                '<module>/<controller>/<action>/<id:\d+>' => '<module>/<controller>/<action>'
             ],
         ],
     ],
