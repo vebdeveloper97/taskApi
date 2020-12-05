@@ -34,7 +34,8 @@ class NewsController extends BaseApiController
             return $model;
         }else{
             return [
-                'warning' => 'Malumot topilmadi!'
+                'success' => false,
+                'message' => 'Malumot topilmadi!'
             ];
         }
     }
@@ -65,19 +66,28 @@ class NewsController extends BaseApiController
                     $transaction->rollBack();
                     $error = $controller.' - '.$action.' da malumotlar saqlanmadi';
                     \Yii::info($error,'save');
-                    return $model->errors;
+                    return [
+                        'success' => false,
+                        'message' => $error,
+                        'errors' => $model->errors
+                    ];
                 }
             }catch (\Exception $e){
                 \Yii::info('xatolik mavjud '.$e->getMessage(), 'save');
                 $app->response->statusCode = 400;
-                return ['errors' => $e->getMessage()];
+                return [
+                    'success' => false,
+                    'message' => 'Xatolik mavjud',
+                    'errors' => $e->getMessage()
+                ];
             }
         }else{
             $error = $controller.' - '.$action.' malumotlar yuklanmadi!';
             \Yii::info($error, 'save');
             $app->response->statusCode = 400;
             return [
-                'errors' => 'Malumotlar yuklanmadi!'
+                'success' => false,
+                'message' => 'Malumotlar yuklanmadi!'
             ];
         }
     }
@@ -88,9 +98,13 @@ class NewsController extends BaseApiController
     public function actionUpdate()
     {
         $id = \Yii::$app->request->get('id',null);
+        $controller = self::getController();
+        $action = self::getAction();
+
         if($id!=null){
             $model = NewsResources::findOne($id);
             if(empty($model)){
+                \Yii::error($controller.'/'.$action.' da malumotlar topilmadi!', 'save');
                 \Yii::$app->response->statusCode = 404;
                 return [
                     'success' => false,
@@ -99,6 +113,7 @@ class NewsController extends BaseApiController
             }
             $postdata = \Yii::$app->request->post();
             if(empty($postdata)){
+                \Yii::error($controller.'/'.$action.' da malumotlar kelmadi', 'save');
                 \Yii::$app->response->statusCode = 404;
                 return [
                     'success' => false,
@@ -107,8 +122,10 @@ class NewsController extends BaseApiController
             }
             $model->setAttributes($postdata);
             if($model->save()){
+                \Yii::info($controller.'/'.$action.' da malumotlar yangilandi!', 'save');
                 return $model;
             }else{
+                \Yii::error($controller.'/'.$action.' da malumotlarni yangilab bolmadi!', 'save');
                 \Yii::$app->response->statusCode = 401;
                 return [
                     'success' => false,
@@ -116,6 +133,7 @@ class NewsController extends BaseApiController
                 ];
             }
         }else{
+            \Yii::error($controller.'/'.$action.' parametr mavjud emas!', 'save');
             \Yii::$app->response->statusCode = 404;
             return [
                 'success' => false,
@@ -129,17 +147,22 @@ class NewsController extends BaseApiController
      * */
     public function actionDelete($id)
     {
+        $controller = self::getController();
+        $action = self::getAction();
+
         if(!empty($id)){
             $model = NewsResources::findOne($id);
             if(!empty($model)){
                 if($model->delete()){
                     $success = 'Id nomeri = '.$id.' \n bolgan raqamdagi malumot ochirildi!';
+                    \Yii::info($controller.'/'.$action.' da '.$success,'save');
                     return [
                         'success' => true,
                         'message' => $success
                     ];
                 }else{
                     $success = 'Id nomeri = '.$id.' bolgan raqamdagi malumot ochirilmadi!';
+                    \Yii::error($controller.'/'.$action.' da.'.$success,'save');
                     return [
                         'success' => false,
                         'message' => $success
@@ -147,6 +170,7 @@ class NewsController extends BaseApiController
                 }
             }else{
                 $success = 'Id nomeri = '.$id.' bolgan raqamdagi malumot topilmadi';
+                \Yii::error($controller.'/'.$action.' da.'.$success,'save');
                 return [
                     'success' => false,
                     'message' => $success
@@ -154,8 +178,11 @@ class NewsController extends BaseApiController
             }
         }else{
             \Yii::$app->response->statusCode = 404;
+            $success = 'Id Parametr mavjud emas!';
+            \Yii::error($controller.'/'.$action.' da.'.$success,'save');
             return [
-                'errors' => 'Id Parametr mavjud emas!'
+                'success' => false,
+                'message' => $success
             ];
         }
     }
