@@ -57,12 +57,12 @@ class BaseApiController extends Controller
     /* Controller qaytarish uchun  */
     public static function getController()
     {
-        return \Yii::$app->controller->id;
+        return Yii::$app->controller->id;
     }
 
     /* Action qaytarish uchun */
     public static function getAction()
     {
-        return \Yii::$app->controller->action->id;
+        return Yii::$app->controller->action->id;
     }
 }

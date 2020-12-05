@@ -3,10 +3,10 @@
 namespace app\models;
 
 use app\components\CustomBehaviors;
-use app\modules\hr\models\HrEmployee;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "news".
@@ -49,11 +49,11 @@ class News extends ActiveRecord
 
     public function afterValidate()
     {
-        if($this->hasErrors()){
+        if ($this->hasErrors()) {
             $res = [
-                'status' => 'error',
-                'table' => self::tableName() ?? '',
-                'url' => \yii\helpers\Url::current([], true),
+                'status'  => 'error',
+                'table'   => self::tableName() ?? '',
+                'url'     => Url::current([], true),
                 'message' => $this->getErrors(),
             ];
             Yii::error($res, 'save');
@@ -62,31 +62,27 @@ class News extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        if(parent::beforeSave($insert)){
-            if($insert){
-                if(empty($this->date)){
-                    $this->date = date('Y-m-d');
-                }
-                if(empty($this->status)){
-                    $this->status = 1;
-                }
+        if (parent::beforeSave($insert)) {
+            if ($insert) {
+                $this->date = $this->date ?? date('Y-m-d');
+                $this->status = $this->status ?? 1;
             }
             return true;
-        }else{
-            return false;
         }
+
+        return false;
     }
 
     public function behaviors()
     {
-       return [
-           [
-               'class' => CustomBehaviors::class,
-           ],
-           [
-               'class' => TimestampBehavior::class,
-           ]
-       ];
+        return [
+            [
+                'class' => CustomBehaviors::class,
+            ],
+            [
+                'class' => TimestampBehavior::class,
+            ]
+        ];
     }
 
 
@@ -109,7 +105,8 @@ class News extends ActiveRecord
         ];
     }
 
-    public function getUsers(){
+    public function getUsers()
+    {
         return $this->hasOne(User::class, ['id' => 'author_id']);
     }
 }
