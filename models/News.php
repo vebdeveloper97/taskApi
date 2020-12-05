@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "news".
@@ -18,7 +19,7 @@ use Yii;
  * @property int|null $created_by
  * @property int|null $updated_by
  */
-class News extends \yii\db\ActiveRecord
+class News extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -48,12 +49,12 @@ class News extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'title' => Yii::t('app', 'Title'),
-            'content' => Yii::t('app', 'Content'),
-            'date' => Yii::t('app', 'Date'),
-            'author' => Yii::t('app', 'Author'),
-            'status' => Yii::t('app', 'Status'),
+            'id'         => Yii::t('app', 'ID'),
+            'title'      => Yii::t('app', 'Title'),
+            'content'    => Yii::t('app', 'Content'),
+            'date'       => Yii::t('app', 'Date'),
+            'author'     => Yii::t('app', 'Author'),
+            'status'     => Yii::t('app', 'Status'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'created_by' => Yii::t('app', 'Created By'),

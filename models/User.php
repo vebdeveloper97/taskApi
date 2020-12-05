@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
@@ -17,8 +18,9 @@ use yii\web\IdentityInterface;
  * @property int|null $created_at
  * @property int|null $updated_at
  * @property int|null $created_by
+ * @property string $access_token
  */
-class User extends \yii\db\ActiveRecord implements IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
     /**
      * {@inheritdoc}
@@ -51,12 +53,12 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'username' => Yii::t('app', 'Username'),
-            'password' => Yii::t('app', 'Password'),
-            'email' => Yii::t('app', 'Email'),
-            'phone' => Yii::t('app', 'Phone'),
-            'status' => Yii::t('app', 'Status'),
+            'id'         => Yii::t('app', 'ID'),
+            'username'   => Yii::t('app', 'Username'),
+            'password'   => Yii::t('app', 'Password'),
+            'email'      => Yii::t('app', 'Email'),
+            'phone'      => Yii::t('app', 'Phone'),
+            'status'     => Yii::t('app', 'Status'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'created_by' => Yii::t('app', 'Created By'),
@@ -122,6 +124,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return Yii::$app->security->validatePassword($this->password,$password);
+        return Yii::$app->security->validatePassword($this->password, $password);
     }
 }
